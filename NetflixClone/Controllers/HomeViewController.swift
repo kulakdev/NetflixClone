@@ -35,6 +35,8 @@ class HomeViewController: UIViewController {
         /// Next two lines allow us to create cells and assign data from an extension at the bottom of this file
         homeFeedTable.delegate = self
         homeFeedTable.dataSource = self
+        
+        homeFeedTable.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 450))
     }
     
     
@@ -58,6 +60,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     }
     /// Creates the cell that will be used in each row inside our table view section
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CollectionViewTableViewCell.identifier, for: indexPath) as? CollectionViewTableViewCell else {
             return UITableViewCell()
         }

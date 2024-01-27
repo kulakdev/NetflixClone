@@ -11,6 +11,8 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
+    let sectionTitles: [String] = ["Trending Movies", "Popular", "Trending TV", "Upcoming Movies","Top rated"]
+    
     private let homeFeedTable: UITableView = {
         /// Initialize the table view which is an instance of UITableView
         let table = UITableView(frame: .zero, style: .grouped)
@@ -36,8 +38,43 @@ class HomeViewController: UIViewController {
         homeFeedTable.delegate = self
         homeFeedTable.dataSource = self
         
+        configureNavbar()
+        
         let headerView = HeroHeaderUIView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 450))
         homeFeedTable.tableHeaderView = headerView
+    }
+    
+    
+    private func configureNavbar() {
+        /// Add image
+        let image = UIImage(named: "netflixLogo")
+        
+        /// REDUNDANT  Make image rendering mode == .alwaysOriginal so that it renders as colored and not accent color
+//        image = image?.withRenderingMode(.alwaysOriginal)
+        
+        /// Create button with an image
+        let imageview = UIButton(type: .custom)
+        imageview.setImage(image, for: .normal)
+        
+        /// Create button item
+        let buttonItem = UIBarButtonItem(customView: imageview)
+        
+        /// Assign array to rightBarButtonItems
+        navigationItem.rightBarButtonItems = [
+            UIBarButtonItem(image: UIImage(systemName: "person"), style: .done, target: self, action: nil),
+            UIBarButtonItem(image: UIImage(systemName: "play.rectangle"), style: .done, target: self, action: nil),
+        ]
+        
+        /// Assign buttonItem to leftBarButtonItem
+        navigationItem.leftBarButtonItem = buttonItem
+        
+        /// Style the custom button
+        let imageviewConstraints = [
+        imageview.widthAnchor.constraint(equalToConstant: 20),
+        imageview.heightAnchor.constraint(equalToConstant: 36),
+        ]
+        
+        NSLayoutConstraint.activate(imageviewConstraints)
     }
     
     
@@ -53,7 +90,7 @@ class HomeViewController: UIViewController {
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     /// Assigns number of sections in our table view
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 20
+        return sectionTitles.count
     }
     /// Assigns amount of rows in our table view section
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -75,5 +112,29 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     /// Defines height for the header of the section
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 40
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let defaultOffset = view.safeAreaInsets.top
+        let offset = scrollView.contentOffset.y + defaultOffset
+        
+        navigationController?.navigationBar.transform = .init(translationX: 0, y: min(0, -offset))
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sectionTitles[section]
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        guard let header = view as? UITableViewHeaderFooterView else { return }
+        
+        header.textLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
+        header.textLabel?.frame = CGRect(
+            x: header.bounds.origin.x + 20,
+            y: header.bounds.origin.y, 
+            width: 100,
+            height: header.bounds.height)
+        header.textLabel?.textColor = .white
+        header.textLabel?.text = header.textLabel?.text?.lowercased()
     }
 }

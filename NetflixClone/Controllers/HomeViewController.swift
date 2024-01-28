@@ -11,7 +11,7 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
-    let sectionTitles: [String] = ["Trending Movies", "Popular", "Trending TV", "Upcoming Movies","Top rated"]
+    let sectionTitles: [String] = ["Trending Movies", "Trending TV", "Popular", "Upcoming Movies", "Top rated"]
     
     private let homeFeedTable: UITableView = {
         /// Initialize the table view which is an instance of UITableView
@@ -39,6 +39,12 @@ class HomeViewController: UIViewController {
         homeFeedTable.dataSource = self
         
         configureNavbar()
+//        getTrendingMovies()
+//        getTrendingTvs()
+//        getUpcomingMovies()
+        getPopularMovies()
+        getTopRatedMovies()
+        
         
         let headerView = HeroHeaderUIView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 450))
         homeFeedTable.tableHeaderView = headerView
@@ -83,6 +89,43 @@ class HomeViewController: UIViewController {
         super.viewDidLayoutSubviews()
         /// Stretch to bounds
         homeFeedTable.frame = view.bounds
+    }
+    
+    private func getTrendingMovies() {
+        APICaller.shared.getTrendingMovies { results in
+            switch results {
+            case .success(let movies):
+                print(movies)
+            case .failure(let error):
+                print(error)
+            }
+
+        }
+        
+    }
+    
+    private func getTrendingTvs() {
+        APICaller.shared.getTrandingTvs { results in
+            return
+        }
+    }
+    
+    private func getUpcomingMovies() {
+        APICaller.shared.getUpcomingMovies { results in
+            return
+        }
+    }
+    
+    private func getPopularMovies() {
+        APICaller.shared.getPopularMovies { _ in
+            return
+        }
+    }
+    
+    private func getTopRatedMovies() {
+        APICaller.shared.getTopRatedMovies { _ in
+            return
+        }
     }
     
 }
@@ -135,6 +178,6 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             width: 100,
             height: header.bounds.height)
         header.textLabel?.textColor = .white
-        header.textLabel?.text = header.textLabel?.text?.lowercased()
+        header.textLabel?.text = header.textLabel?.text?.capitalizeFirstLetter()
     }
 }

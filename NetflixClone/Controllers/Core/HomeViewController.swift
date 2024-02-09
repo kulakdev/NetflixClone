@@ -8,6 +8,13 @@
 /// - NOTE: This controller controls what's being displayed on the home screen
 ///
 import UIKit
+enum Section: Int {
+    case trendingMovies = 0
+    case trendingTv = 1
+    case popular = 2
+    case upcoming = 3
+    case topRated = 4
+}
 
 class HomeViewController: UIViewController {
     
@@ -145,6 +152,60 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CollectionViewTableViewCell.identifier, for: indexPath) as? CollectionViewTableViewCell else {
             return UITableViewCell()
         }
+        switch indexPath.section  {
+        case Section.trendingMovies.rawValue:
+            APICaller.shared.getTrendingMovies { result in
+                switch result {
+                case .success(let success):
+                    cell.configure(with: success)
+                case .failure(let failure):
+                    print(failure)
+                }
+            }
+            
+        case Section.trendingTv.rawValue:
+            APICaller.shared.getTrandingTvs { result in
+                switch result {
+                case .success(let success):
+                    cell.configure(with: success)
+                case .failure(let failure):
+                    print(failure)
+                }
+            }
+            
+        case Section.popular.rawValue:
+            APICaller.shared.getPopularMovies { result in
+                switch result {
+                case .success(let success):
+                    cell.configure(with: success)
+                case .failure(let failure):
+                    print(failure)
+                }
+            }
+            
+        case Section.upcoming.rawValue:
+            APICaller.shared.getUpcomingMovies { result in
+                switch result {
+                case .success(let success):
+                    cell.configure(with: success)
+                case .failure(let failure):
+                    print(failure)
+                }
+            }
+            
+        case Section.topRated.rawValue:
+            APICaller.shared.getTopRatedMovies { result in
+                switch result {
+                case .success(let success):
+                    cell.configure(with: success)
+                case .failure(let failure):
+                    print(failure)
+                }
+            }
+        default:
+            return UITableViewCell()
+        }
+
         return cell
     }
     
